@@ -40,7 +40,10 @@ Push auf `main` deployt automatisch über Vercel. Pull Requests erzeugen Preview
 ## Externe Dienste
 
 Eingebunden ist Google Analytics (`G-JLC9ESFDT4`) sowie das Consent-Tool CookieYes.
-Google Maps wird als iframe auf der Startseite eingebettet und lädt erst beim Rendern.
+Google Maps ist als Zwei-Klick-Lösung eingebunden (`js/maps-consent.js`,
+`css/maps-consent.css`): Ohne Zustimmung geht kein Request an Google. Erst ein
+Klick auf "Karte laden" setzt das iframe ein; "Laden und merken" hinterlegt die
+Entscheidung in localStorage (Schlüssel `zar:maps-consent`).
 
 ## Änderungen pflegen
 

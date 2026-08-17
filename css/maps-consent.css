@@ -1,0 +1,135 @@
+/* Zwei-Klick-Loesung fuer die Google-Maps-Einbettung.
+   Die Karte wird erst nach ausdruecklicher Zustimmung geladen; bis dahin
+   geht kein Request an Google. Optik folgt den Marken-Tokens der Seite. */
+
+.maps-consent {
+  aspect-ratio: 3 / 2;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background-color: var(--brand-100, #f1f9f2);
+  background-image:
+    radial-gradient(circle at 22% 28%, var(--brand-200, #e2f3e4) 0%, rgba(226, 243, 228, 0) 55%),
+    radial-gradient(circle at 78% 74%, var(--brand-300, #cfedd3) 0%, rgba(207, 237, 211, 0) 52%);
+  color: var(--black, #142917);
+}
+
+/* Dezentes Straßenraster als Andeutung einer Karte — rein dekorativ, kein externes Asset. */
+.maps-consent::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--brand-500, #a9dbaf) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--brand-500, #a9dbaf) 1px, transparent 1px);
+  background-size: 3.5rem 3.5rem;
+  opacity: .35;
+  pointer-events: none;
+}
+
+.maps-consent__inner {
+  position: relative;
+  max-width: 30rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .75rem;
+}
+
+.maps-consent__pin {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--brand-900, #39593d);
+  flex: none;
+}
+
+.maps-consent__title {
+  margin: 0;
+  font-family: Junicode, Georgia, serif;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  font-weight: 400;
+  color: var(--black, #142917);
+}
+
+.maps-consent__text {
+  margin: 0;
+  font-size: .9375rem;
+  line-height: 1.55;
+  color: var(--neutra-700, #7c8270);
+}
+
+.maps-consent__text a {
+  color: var(--brand-900, #39593d);
+  text-decoration: underline;
+}
+
+.maps-consent__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  justify-content: center;
+  margin-top: .5rem;
+}
+
+.maps-consent__button {
+  appearance: none;
+  border: 1px solid var(--brand-900, #39593d);
+  border-radius: 62.5rem;
+  padding: .75rem 1.5rem;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.2;
+  color: var(--black, #142917);
+  background-color: var(--brand-500, #a9dbaf);
+  cursor: pointer;
+  transition: background-color .2s ease, color .2s ease;
+}
+
+.maps-consent__button:hover {
+  background-color: var(--brand-900, #39593d);
+  color: var(--white, #fff);
+}
+
+.maps-consent__button:focus-visible {
+  outline: 2px solid var(--brand-900, #39593d);
+  outline-offset: 3px;
+}
+
+.maps-consent__button--secondary {
+  background-color: transparent;
+  border-color: var(--border, #aeb39f);
+}
+
+.maps-consent__button--secondary:hover {
+  background-color: var(--white, #fff);
+  color: var(--black, #142917);
+  border-color: var(--brand-900, #39593d);
+}
+
+.maps-consent__note {
+  margin: .25rem 0 0;
+  font-size: .8125rem;
+  line-height: 1.4;
+  color: var(--neutra-700, #7c8270);
+}
+
+/* Nach Zustimmung fuellt das iframe denselben Rahmen wie zuvor. */
+.maps-consent__frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+@media (max-width: 30rem) {
+  .maps-consent { padding: 1.5rem 1rem; }
+  .maps-consent__title { font-size: 1.25rem; }
+  .maps-consent__actions { flex-direction: column; align-self: stretch; }
+  .maps-consent__button { width: 100%; }
+}
