@@ -1,0 +1,879 @@
+/* =========================================================================
+   Intraoralscanner — Landingpage
+   Umsetzung des Figma-Designs "Homepage / Desktop" (node 10219:30).
+   Alle Farb-, Schrift- und Maßangaben stammen aus den Figma-Variablen bzw.
+   aus get_design_context, nicht aus Schätzungen.
+   ========================================================================= */
+
+/* ---------- Schriften (liegen lokal im Projekt) ---------- */
+@font-face {
+  font-family: 'Junicode';
+  src: url('../fonts/Junicode.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Junicode';
+  src: url('../fonts/Junicode-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Junicode';
+  src: url('../fonts/Junicode-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Tokens ---------- */
+:root {
+  /* Marke */
+  --black:        #142917;
+  --white:        #fbfff4;
+  --brand-200:    #e2f3e4;
+  --brand-300:    #cfedd3;
+  --brand-500:    #a9dbaf;
+  --brand-700:    #94cd9b;
+  --brand-900:    #39593d;
+  --neutral-100:  #f3f7ea;
+  --border-tert:  #d5dac6;
+  --border-succ:  #8cba92;
+
+  /* aus dem BYQ-Theme übernommen */
+  --light:        #f4f1eb;
+  --light-two:    #efeadf;
+  --dark:         #1c3433;
+  --accent:       #75fb91;
+  --link-active:  #f1ae72;
+
+  /* Typo */
+  --serif: 'Junicode', Georgia, 'Times New Roman', serif;
+  --sans:  'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Maße */
+  --nav-h:        112px;
+  --card-max:     1335.5px;
+  --page-max:     1440px;
+  --radius-card:  30px;
+  --radius-btn:   12px;
+  --radius-tile:  24px;
+
+  --shadow-large:
+      0 8px 8px -4px rgba(0, 0, 0, .031),
+      0 20px 24px -4px rgba(0, 0, 0, .078);
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body.ios-page {
+  margin: 0;
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ios-page img,
+.ios-page svg { display: block; max-width: 100%; }
+
+.ios-page h1, .ios-page h2, .ios-page h3, .ios-page p, .ios-page ul, .ios-page figure {
+  margin: 0;
+}
+.ios-page ul { padding: 0; list-style: none; }
+
+.ios-page a { color: inherit; text-decoration: none; }
+
+:where(.ios-page) a:focus-visible,
+:where(.ios-page) button:focus-visible,
+:where(.ios-page) summary:focus-visible {
+  outline: 2px solid var(--brand-900);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.ios-visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- Grundraster ---------- */
+.ios-shell { width: 100%; margin: 0 auto; }
+
+.ios-inner {
+  width: min(100% - 2 * var(--gutter, 24px), var(--card-max));
+  margin-inline: auto;
+}
+
+/* =========================================================================
+   Buttons
+   Figma: Höhe 51px, Radius 12px, padding-left 32 / -right 24, gap 8
+   ========================================================================= */
+.ios-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 51px;
+  padding: 12px 24px 12px 32px;
+  border-radius: var(--radius-btn);
+  border: 1px solid transparent;
+  font-family: var(--sans);
+  font-size: 18px;
+  line-height: 1.5;
+  color: #000;
+  background: var(--brand-500);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .2s ease, color .2s ease, transform .2s ease;
+}
+.ios-btn:hover { background: var(--brand-900); color: var(--white); transform: translateY(-1px); }
+.ios-btn:hover .ios-btn__icon { filter: brightness(0) invert(1); }
+
+.ios-btn--primary { background: var(--brand-500); border-color: var(--white); }
+.ios-btn--soft    { background: var(--neutral-100); border-color: var(--neutral-100); font-size: 16px; }
+.ios-btn--nav     { background: var(--white); border-color: #fff; min-height: 43px; padding: 8px 24px;
+                    box-shadow: 2px 4px 4.8px rgba(0,0,0,.06),
+                                -2px -2px 10.8px #fff,
+                                4px 4px 11.4px rgba(0,0,0,.13); }
+.ios-btn--ghost   { background: var(--neutral-100); border-color: var(--border-tert); }
+
+.ios-btn__icon { width: 15.54px; height: 15.54px; flex: none; transition: filter .2s ease; }
+.ios-btn__icon--phone { width: 18px; height: 18px; }
+.ios-btn__icon--trail { order: 2; }
+
+/* =========================================================================
+   Navbar — Figma 10219:33
+   ========================================================================= */
+.ios-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  min-height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  padding: 0 48px;
+  background: var(--brand-700);
+}
+.ios-nav__inner {
+  width: 100%;
+  max-width: 1344px;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.ios-nav__brand { flex: 1 0 0; min-width: 0; display: flex; align-items: center; }
+.ios-nav__brand img { width: 263.3px; height: auto; }
+
+.ios-nav__links { display: flex; align-items: center; gap: 32px; }
+.ios-nav__links a {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--black);
+  white-space: nowrap;
+  padding: 4px 0;
+  border-bottom: 1px solid transparent;
+  transition: border-color .2s ease;
+}
+.ios-nav__links a:hover { border-bottom-color: var(--black); }
+
+.ios-nav__actions { flex: 1 0 0; min-width: 0; display: flex; justify-content: flex-end; }
+
+.ios-nav__toggle { display: none; }
+
+/* =========================================================================
+   Hero — Figma 10219:31 / 10219:53030
+   Karte: 1335.5 × 520.94, Radius 30, bg #142917, 179px unter Seitenanfang
+   ========================================================================= */
+.ios-hero { background: var(--white); padding: 67px 0 76px; }
+
+.ios-hero__card {
+  position: relative;
+  width: min(100% - 48px, var(--card-max));
+  margin-inline: auto;
+  min-height: 520.94px;
+  border-radius: var(--radius-card);
+  background: var(--black);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Dekor: exakt die Figma-Geometrie, in % umgerechnet auf die Kartenbreite */
+.ios-hero__decor { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.ios-hero__waves {
+  position: absolute;
+  left: 24.23%;      /* 323.59 / 1335.515 */
+  top: 14.96%;       /*  77.93 / 520.94   */
+  width: 81.29%;     /* 1085.65 / 1335.515 */
+  height: auto;
+}
+.ios-hero__ellipse-big {
+  position: absolute;
+  left: 43.43%;      /* 580.01 / 1335.515 */
+  top: 74.48%;       /* 387.97 / 520.94   */
+  width: 73.59%;     /* 982.76 / 1335.515 */
+  height: auto;
+}
+.ios-hero__ellipse-small {
+  position: absolute;
+  left: 69.92%;      /* 933.74 / 1335.515 */
+  top: 80.56%;       /* 419.69 / 520.94   */
+  width: 20.61%;     /* 275.30 / 1335.515 */
+  height: auto;
+}
+
+.ios-hero__figure {
+  position: absolute;
+  left: 68.26%;      /* 911.58 / 1335.515 */
+  top: 2.17%;        /*  11.30 / 520.94   */
+  width: 19.42%;     /* 259.40 / 1335.515 */
+  z-index: 2;
+}
+.ios-hero__figure img { width: 100%; height: auto; }
+
+.ios-hero__col {
+  position: relative;
+  z-index: 3;
+  padding: 76.47px 0 0 90px;
+  width: min(763px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ios-hero__eyebrow {
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: .8px;
+  color: var(--white);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.ios-hero__title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 62px;
+  line-height: 1;
+  color: var(--white);
+  letter-spacing: 0;
+}
+.ios-hero__lead {
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--white);
+  max-width: 648px;
+  margin-top: 16px;
+}
+.ios-hero__actions { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; padding-top: 32px; }
+
+/* =========================================================================
+   Stats — Figma 10219:53200
+   4 Kacheln 320 × 254, Radius 24, auf --neutral-100
+   ========================================================================= */
+.ios-stats { background: var(--neutral-100); padding: 65.5px 0; }
+.ios-stats__grid {
+  width: min(100% - 48px, 1298px);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.ios-stat {
+  min-height: 254px;
+  border-radius: var(--radius-tile);
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px 24px;
+  text-align: center;
+}
+.ios-stat__num {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.1;
+  color: var(--brand-700);
+  white-space: nowrap;
+}
+.ios-stat__num small { font-size: .62em; }
+.ios-stat__label {
+  font-size: 20px;
+  line-height: 1.5;
+  color: #6b7a6d;
+  max-width: 278px;
+}
+
+/* =========================================================================
+   Vergleich — ergänzte Sektion, Design-Sprache aus Stats + Process
+   ========================================================================= */
+.ios-compare { background: var(--white); padding: 96px 0; }
+.ios-compare__head { text-align: center; margin-bottom: 56px; }
+.ios-compare__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.ios-compare__col {
+  border-radius: var(--radius-tile);
+  padding: 40px;
+  border: 1px solid transparent;
+}
+.ios-compare__col--old {
+  background: var(--light);
+  border-color: var(--border-tert);
+  color: #6b6558;
+}
+.ios-compare__col--new {
+  background: var(--black);
+  color: var(--light);
+}
+.ios-compare__label {
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  opacity: .75;
+}
+.ios-compare__title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+.ios-compare__col--new .ios-compare__title { color: var(--white); }
+
+.ios-compare__list li {
+  display: flex;
+  gap: 12px;
+  padding: 14px 0;
+  font-size: 18px;
+  line-height: 1.5;
+  border-bottom: 1px solid rgba(20, 41, 23, .1);
+}
+.ios-compare__col--new .ios-compare__list li { border-bottom-color: rgba(251, 255, 244, .14); }
+.ios-compare__list li:last-child { border-bottom: 0; padding-bottom: 0; }
+
+.ios-compare__mark { flex: none; width: 20px; height: 27px; display: flex; align-items: center; }
+.ios-compare__mark svg { width: 20px; height: 20px; }
+.ios-compare__col--old .ios-compare__mark svg { color: #a89f8c; }
+.ios-compare__col--new .ios-compare__mark svg { color: var(--accent); }
+
+/* =========================================================================
+   Process — Figma 10219:53153
+   ========================================================================= */
+.ios-process {
+  position: relative;
+  background: var(--black);
+  padding: 120px 0 156px;
+  overflow: hidden;
+}
+/* Figma legt die Wellen als maskierte, um 51.89° gedrehte Kopie der Hero-Grafik
+   in die obere rechte Ecke. Hier als geclipptes Element nachgebaut. */
+.ios-process__wave {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 494px;
+  height: 360px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.ios-process__wave img {
+  position: absolute;
+  top: -190px;
+  left: -170px;
+  width: 900px;
+  max-width: none;
+  transform: rotate(51.89deg);
+  transform-origin: 50% 50%;
+  opacity: .5;
+}
+.ios-process__head { position: relative; z-index: 1; text-align: center; margin-bottom: 103px; }
+.ios-process__title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.1;
+  color: var(--light);
+}
+.ios-process__sub { font-size: 18px; line-height: 1.5; color: var(--light); }
+
+.ios-process__steps {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 58px;
+  width: min(100% - 48px, 1262px);
+  margin-inline: auto;
+}
+.ios-step { text-align: center; display: flex; flex-direction: column; align-items: center; }
+.ios-step__num {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 126px;
+  line-height: 1.2;
+  letter-spacing: -7.56px;
+  color: var(--light-two);
+  opacity: .5;
+  margin-bottom: -18px;
+}
+.ios-step__rail {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.ios-step__rail::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -50%;
+  right: -50%;
+  height: 1px;
+  background: var(--light-two);
+  opacity: .5;
+}
+.ios-step:first-child .ios-step__rail::before { left: 50%; }
+.ios-step:last-child  .ios-step__rail::before { right: 50%; }
+.ios-step__dot {
+  position: relative;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.ios-step__title {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--light-two);
+  margin-bottom: 20px;
+  white-space: nowrap;   /* wie im Figma einzeilig; ab 1024px wieder umbrechend */
+}
+.ios-step__text {
+  font-size: 18px;
+  line-height: 1.3;
+  color: var(--white);
+  opacity: .6;
+  max-width: 272px;
+}
+
+/* =========================================================================
+   FAQ — Figma 10219:53065
+   Zeilen 663 × 89, Radius ~24, bg --brand-300
+   ========================================================================= */
+.ios-faq { background: var(--white); padding: 143px 0 144px; }
+.ios-faq__grid {
+  display: grid;
+  grid-template-columns: 486px 1fr;
+  gap: 166px;
+  align-items: start;
+}
+.ios-faq__title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.1;
+  color: var(--black);
+  margin-bottom: 16px;
+}
+.ios-faq__intro { font-size: 18px; line-height: 1.5; color: #5b6a5d; margin-bottom: 28px; max-width: 420px; }
+
+.ios-faq__list { display: flex; flex-direction: column; gap: 16px; }
+
+.ios-faq__item {
+  background: var(--brand-300);
+  border-radius: var(--radius-tile);
+  overflow: hidden;
+}
+.ios-faq__item > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 89px;
+  padding: 24px 39px 24px 40px;
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--black);
+}
+.ios-faq__item > summary::-webkit-details-marker { display: none; }
+
+.ios-faq__sign { position: relative; flex: none; width: 24px; height: 24px; }
+.ios-faq__sign::before,
+.ios-faq__sign::after {
+  content: '';
+  position: absolute;
+  background: var(--black);
+  transition: transform .25s ease, opacity .25s ease;
+}
+.ios-faq__sign::before { top: 11px; left: 2px; width: 20px; height: 2px; }
+.ios-faq__sign::after  { left: 11px; top: 2px; height: 20px; width: 2px; }
+.ios-faq__item[open] .ios-faq__sign::after { transform: rotate(90deg); opacity: 0; }
+
+.ios-faq__answer {
+  padding: 0 40px 28px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: #2c4430;
+  max-width: 60ch;
+}
+
+/* =========================================================================
+   Team — Figma 10219:229
+   ========================================================================= */
+.ios-team { position: relative; background: var(--white); padding: 61px 0 120px; overflow: hidden; }
+.ios-team::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 56.5%;
+  width: 1148px; height: 198px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(244, 241, 235, .95) 0%, rgba(251, 255, 244, 0) 70%);
+  pointer-events: none;
+}
+.ios-team__rule { border: 0; border-top: 1px solid var(--border-tert); margin: 0 0 52px; }
+.ios-team__title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.1;
+  color: var(--black);
+  margin-bottom: 100px;
+}
+.ios-team__card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 432px 1fr;
+  align-items: stretch;
+  border-radius: var(--radius-tile);
+  background: var(--brand-500);
+  box-shadow: var(--shadow-large);
+  overflow: hidden;
+  min-height: 471px;
+}
+.ios-team__photo { position: relative; background: #fff; overflow: hidden; border-radius: var(--radius-tile) 0 0 var(--radius-tile); }
+.ios-team__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+
+.ios-team__leaf {
+  position: absolute;
+  right: 0; top: 30px;
+  width: 512px;
+  opacity: .28;
+  pointer-events: none;
+}
+.ios-team__body {
+  position: relative;
+  z-index: 1;
+  padding: 76px 56px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.ios-team__name {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.2;
+  color: var(--white);
+}
+.ios-team__role { font-size: 20px; line-height: 1.5; color: var(--white); opacity: .85; margin-bottom: 22px; }
+.ios-team__list li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--white);
+  padding: 5px 0;
+}
+.ios-team__list svg { flex: none; width: 18px; height: 18px; margin-top: 5px; color: var(--white); opacity: .8; }
+
+/* =========================================================================
+   Kontakt / CTA — Figma 10219:356
+   ========================================================================= */
+.ios-contact { background: var(--white); padding: 151px 0 0; }
+.ios-contact__grid {
+  width: min(100% - 48px, 1104px);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: 512px 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.ios-contact__title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.1;
+  color: var(--black);
+  margin-bottom: 24px;
+}
+.ios-contact__panel { border-left: 1px solid var(--border-succ); padding-left: 32px; }
+.ios-contact__phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--black);
+  margin-bottom: 24px;
+}
+.ios-contact__phone svg { width: 21px; height: 21px; color: var(--black); }
+.ios-contact__address {
+  font-style: normal;          /* <address> rendert sonst kursiv */
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--black);
+  margin-bottom: 28px;
+}
+.ios-contact__map {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-large);
+  background: var(--neutral-100);
+}
+.ios-contact__map img { width: 100%; height: auto; }
+
+.ios-contact__banner { margin-top: 120px; height: 534px; overflow: hidden; }
+.ios-contact__banner img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; }
+
+/* =========================================================================
+   Footer — Figma 10219:376
+   ========================================================================= */
+.ios-footer { background: var(--brand-500); padding: 80px 0 40px; }
+.ios-footer__brand { display: flex; flex-direction: column; align-items: center; gap: 32px; }
+.ios-footer__brand img { width: 237px; height: auto; }
+.ios-footer__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px; }
+.ios-footer__links a { font-size: 16px; line-height: 1.5; color: var(--black); }
+.ios-footer__links a:hover { text-decoration: underline; }
+
+.ios-footer__credits { width: min(100% - 48px, 1312px); margin: 109px auto 0; }
+.ios-footer__divider { border: 0; border-top: 1px solid rgba(20, 41, 23, .25); margin: 0 0 33px; }
+.ios-footer__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--black);
+}
+.ios-footer__legal { display: flex; gap: 24px; }
+.ios-footer__legal a { text-decoration: underline; }
+
+/* =========================================================================
+   Sektionsköpfe (geteilt)
+   ========================================================================= */
+.ios-h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.1;
+  color: var(--black);
+}
+.ios-sub { font-size: 18px; line-height: 1.5; color: #5b6a5d; margin-top: 8px; }
+
+/* =========================================================================
+   Sanftes Einblenden
+   ========================================================================= */
+/* Nur wenn JavaScript läuft, wird überhaupt versteckt — ohne JS bleibt alles
+   sichtbar, statt auf ein Event zu warten, das nie kommt. */
+.js .ios-reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+.js .ios-reveal.is-in { opacity: 1; transform: none; }
+
+/* =========================================================================
+   Responsiv
+   Das Figma liefert nur Desktop (1440). Die Stufen darunter sind aus der
+   Design-Sprache abgeleitet: gleiche Tokens, gleiche Radien, gleiche
+   Reihenfolge — nur Raster, Schriftgrade und Abstände skalieren.
+   ========================================================================= */
+
+@media (max-width: 1200px) {
+  .ios-hero__col { padding: 56px 48px 56px 56px; width: 100%; max-width: 640px; }
+  .ios-hero__title { font-size: 52px; }
+  .ios-hero__figure { width: 24%; left: 68%; }
+  .ios-faq__grid { grid-template-columns: 380px 1fr; gap: 64px; }
+  .ios-team__card { grid-template-columns: 360px 1fr; }
+  .ios-team__body { padding: 56px 40px; }
+  .ios-contact__grid { grid-template-columns: 1fr 1fr; gap: 48px; }
+  .ios-process__steps { gap: 32px; }
+  .ios-step__num { font-size: 96px; letter-spacing: -5px; }
+}
+
+@media (max-width: 1024px) {
+  .ios-nav { padding: 0 24px; }
+  .ios-nav__links { display: none; }
+  .ios-nav__toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; margin-left: 12px;
+    border: 1px solid rgba(20,41,23,.25); border-radius: 10px;
+    background: var(--white); cursor: pointer;
+  }
+  .ios-nav__toggle span, .ios-nav__toggle span::before, .ios-nav__toggle span::after {
+    content: ''; display: block; width: 18px; height: 2px; background: var(--black);
+    position: relative; transition: transform .2s ease, opacity .2s ease;
+  }
+  .ios-nav__toggle span::before { position: absolute; top: -6px; }
+  .ios-nav__toggle span::after  { position: absolute; top: 6px; }
+  .ios-nav.is-open .ios-nav__toggle span { background: transparent; }
+  .ios-nav.is-open .ios-nav__toggle span::before { transform: translateY(6px) rotate(45deg); }
+  .ios-nav.is-open .ios-nav__toggle span::after  { transform: translateY(-6px) rotate(-45deg); }
+
+  .ios-nav.is-open .ios-nav__links {
+    display: flex;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 16px 24px 24px;
+    background: var(--brand-700);
+    border-top: 1px solid rgba(20,41,23,.12);
+  }
+  .ios-nav.is-open .ios-nav__links a { padding: 12px 0; font-size: 18px; }
+
+  /* Kompakter CTA, damit Logo, Button und Burger nebeneinander passen */
+  .ios-nav__brand img { width: 200px; }
+  .ios-btn--nav { font-size: 15px; padding: 8px 16px; min-height: 40px; }
+  .ios-btn--nav .ios-btn__icon { width: 13px; height: 13px; }
+
+  .ios-process__steps { grid-template-columns: repeat(2, 1fr); gap: 56px 32px; }
+  .ios-step__rail::before { display: none; }
+  .ios-step__rail { margin-bottom: 16px; }
+  .ios-step__title { white-space: normal; }
+
+  .ios-faq__grid { grid-template-columns: 1fr; gap: 40px; }
+  .ios-faq { padding: 88px 0; }
+
+  .ios-contact { padding-top: 88px; }
+  .ios-contact__grid { grid-template-columns: 1fr; gap: 40px; }
+  .ios-contact__banner { margin-top: 72px; height: 360px; }
+
+  .ios-stats__grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .ios-stat { min-height: 200px; }
+}
+
+@media (max-width: 860px) {
+  .ios-hero { padding: 32px 0 48px; }
+  .ios-hero__card { min-height: 0; border-radius: 24px; }
+  .ios-hero__col { padding: 40px 28px 0; max-width: none; }
+  .ios-hero__title { font-size: clamp(34px, 8.2vw, 48px); }
+  .ios-hero__lead  { font-size: 17px; }
+  .ios-hero__eyebrow { font-size: 14px; }
+  .ios-hero__actions { gap: 12px; padding-top: 24px; }
+  .ios-hero__actions .ios-btn { flex: 1 1 auto; justify-content: center; padding-inline: 20px; }
+
+  /* Scanner rückt unter den Text und bekommt eine eigene Bühne */
+  .ios-hero__figure {
+    position: relative;
+    left: auto; top: auto;
+    width: 62%;
+    max-width: 240px;
+    margin: 28px auto -2px;
+  }
+  .ios-hero__waves { top: 34%; left: 8%; width: 130%; opacity: .8; }
+  .ios-hero__ellipse-big { top: 78%; left: 0; width: 130%; }
+  .ios-hero__ellipse-small { top: 84%; left: 34%; width: 46%; }
+
+  .ios-compare { padding: 64px 0; }
+  .ios-compare__grid { grid-template-columns: 1fr; gap: 16px; }
+  .ios-compare__col { padding: 28px 24px; }
+  .ios-compare__title { font-size: 26px; }
+  .ios-compare__list li { font-size: 16px; padding: 12px 0; }
+
+  .ios-process { padding: 72px 0 88px; }
+  .ios-process__head { margin-bottom: 56px; }
+  .ios-process__wave { width: 60%; height: 240px; }
+
+  .ios-team { padding: 40px 0 72px; }
+  .ios-team__title { font-size: 34px; margin-bottom: 40px; }
+  .ios-team__card { grid-template-columns: 1fr; min-height: 0; }
+  .ios-team__photo { border-radius: var(--radius-tile) var(--radius-tile) 0 0; aspect-ratio: 4 / 3; }
+  .ios-team__photo img { object-position: center 22%; }
+  .ios-team__body { padding: 32px 24px 36px; }
+  .ios-team__name { font-size: 30px; }
+  .ios-team__role { font-size: 17px; }
+  .ios-team__list li { font-size: 16px; }
+  .ios-team__leaf { width: 300px; top: auto; bottom: -40px; opacity: .22; }
+
+  .ios-footer { padding: 56px 0 32px; }
+  .ios-footer__credits { margin-top: 56px; }
+  .ios-footer__row { flex-direction: column; align-items: center; text-align: center; gap: 12px; }
+  .ios-footer__links { gap: 20px; }
+}
+
+@media (max-width: 620px) {
+  .ios-stats { padding: 40px 0; }
+  .ios-stats__grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .ios-stat { min-height: 168px; padding: 24px 16px; border-radius: 20px; }
+  .ios-stat__num { font-size: 36px; }
+  .ios-stat__label { font-size: 15px; }
+
+  .ios-h2, .ios-faq__title, .ios-process__title, .ios-contact__title, .ios-team__title { font-size: 32px; }
+  .ios-process__sub, .ios-sub { font-size: 16px; }
+
+  .ios-process__steps { grid-template-columns: 1fr; gap: 40px; }
+  .ios-step__num { font-size: 84px; letter-spacing: -4px; margin-bottom: -12px; }
+  .ios-step__title { font-size: 18px; margin-bottom: 12px; }
+  .ios-step__text { font-size: 16px; }
+
+  .ios-faq__item > summary { padding: 20px 20px 20px 24px; font-size: 16px; min-height: 72px; gap: 16px; }
+  .ios-faq__answer { padding: 0 24px 22px; font-size: 16px; }
+
+  .ios-contact__panel { padding-left: 20px; }
+  .ios-contact__address { font-size: 16px; }
+  .ios-contact__banner { height: 260px; margin-top: 56px; }
+
+  .ios-btn { font-size: 16px; padding-inline: 20px 18px; }
+}
+
+@media (max-width: 380px) {
+  .ios-stats__grid { grid-template-columns: 1fr; }
+  .ios-hero__actions .ios-btn { width: 100%; }
+}
+
+/* ---------- Bewegung reduzieren ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ios-page *, .ios-page *::before, .ios-page *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+  .ios-reveal { opacity: 1; transform: none; }
+}
+
+/* ---------- Druck ---------- */
+@media print {
+  .ios-nav, .ios-contact__banner, .ios-hero__decor { display: none; }
+  .ios-page { background: #fff; color: #000; }
+  .ios-faq__item > summary { min-height: 0; }
+}
