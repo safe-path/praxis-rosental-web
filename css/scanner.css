@@ -880,10 +880,14 @@ body.ios-page {
     display: flex;
     justify-content: center;
   }
-  .ios-hero__waves { top: 26%; left: -30%; width: 170%; opacity: .8; }
+  /* Deutlich überbreit: nur der mittlere Teil der Welle liegt auf der Karte,
+     beide Enden liegen weit ausserhalb und werden beschnitten. */
+  .ios-hero__waves { top: 22%; left: -85%; width: 285%; opacity: .8; }
 
-  /* Großer Halbkreis, der unten aus der Karte läuft — der Scanner steht mittig darauf. */
-  .ios-hero__ellipse-big { display: none; }
+  /* Mobil trägt nur der große ::after-Bogen die Bühne. Die Figma-Ellipse wird
+     ausgeblendet — Selektor zweistufig, weil .ios-page img aus dem Reset sonst
+     die höhere Spezifität hat und display:block durchsetzt. */
+  .ios-hero__decor .ios-hero__ellipse-big { display: none; }
 
   .ios-hero__card::after {
     content: '';
