@@ -148,10 +148,10 @@ body.ios-page {
 
 .ios-btn--primary { background: var(--brand-500); border-color: var(--white); }
 .ios-btn--soft    { background: var(--neutral-100); border-color: var(--neutral-100); font-size: 16px; }
-.ios-btn--nav     { background: var(--white); border-color: #fff; min-height: 43px; padding: 8px 24px;
-                    box-shadow: 2px 4px 4.8px rgba(0,0,0,.06),
-                                -2px -2px 10.8px #fff,
-                                4px 4px 11.4px rgba(0,0,0,.13); }
+/* CTA exakt wie auf der Startseite: weiß, 2px Rand, Radius 11.2 */
+.ios-btn--nav     { background: #fff; border: 2px solid #e9e8f0; border-radius: 11.2px;
+                    min-height: 52px; padding: 12px 24px; font-size: 16px; box-shadow: none; }
+.ios-btn--nav:hover { background: var(--brand-900); border-color: var(--brand-900); color: var(--white); }
 .ios-btn--ghost   { background: var(--neutral-100); border-color: var(--border-tert); }
 
 .ios-btn__icon { width: 15.54px; height: 15.54px; flex: none; transition: filter .2s ease; }
@@ -161,34 +161,37 @@ body.ios-page {
 /* =========================================================================
    Navbar — Figma 10219:33
    ========================================================================= */
+/* Werte 1:1 von der Startseite (.nav-primary_component) übernommen,
+   damit die Leiste auf beiden Seiten identisch aussieht. */
 .ios-nav {
   position: sticky;
   top: 0;
-  z-index: 50;
-  min-height: var(--nav-h);
+  z-index: 1000;
+  min-height: 80px;
   display: flex;
   align-items: center;
-  padding: 0 48px;
-  background: var(--brand-700);
+  padding: 8px 40px;
+  background: var(--brand-500);
+  box-shadow: 2px 6px 20px rgba(0, 0, 0, .2);
 }
 .ios-nav__inner {
   width: 100%;
-  max-width: 1344px;
+  max-width: 1280px;
   margin-inline: auto;
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 16px;
 }
 .ios-nav__brand { flex: 1 0 0; min-width: 0; display: flex; align-items: center; }
-.ios-nav__brand img { width: 263.3px; height: auto; }
+.ios-nav__brand img { width: 203px; height: auto; }
 
-.ios-nav__links { display: flex; align-items: center; gap: 32px; }
+.ios-nav__links { display: flex; align-items: center; gap: 0; }
 .ios-nav__links a {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.5;
   color: var(--black);
   white-space: nowrap;
-  padding: 4px 0;
+  padding: 12px 16px;
   border-bottom: 1px solid transparent;
   transition: border-color .2s ease;
 }
@@ -220,11 +223,17 @@ body.ios-page {
 
 /* Dekor: exakt die Figma-Geometrie, in % umgerechnet auf die Kartenbreite */
 .ios-hero__decor { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+/* Dekor darf breiter als die Karte werden — das globale img{max-width:100%}
+   würde die Überbreite sonst kappen und die Wellen enden mitten in der Fläche. */
+.ios-hero__decor img { max-width: none; }
+/* Wellen laufen bewusst über beide Kanten hinaus und werden vom
+   overflow:hidden der Karte beschnitten — so enden sie nicht sichtbar
+   in der Fläche, sondern laufen durch. */
 .ios-hero__waves {
   position: absolute;
-  left: 24.23%;      /* 323.59 / 1335.515 */
-  top: 14.96%;       /*  77.93 / 520.94   */
-  width: 81.29%;     /* 1085.65 / 1335.515 */
+  left: -12%;
+  top: -6%;
+  width: 124%;
   height: auto;
 }
 .ios-hero__ellipse-big {
@@ -234,13 +243,7 @@ body.ios-page {
   width: 73.59%;     /* 982.76 / 1335.515 */
   height: auto;
 }
-.ios-hero__ellipse-small {
-  position: absolute;
-  left: 69.92%;      /* 933.74 / 1335.515 */
-  top: 80.56%;       /* 419.69 / 520.94   */
-  width: 20.61%;     /* 275.30 / 1335.515 */
-  height: auto;
-}
+/* Der kleine zweite Halbkreis ist raus — ein Bogen trägt die Bühne. */
 
 .ios-hero__figure {
   position: absolute;
@@ -877,11 +880,10 @@ body.ios-page {
     display: flex;
     justify-content: center;
   }
-  .ios-hero__waves { top: 30%; left: 4%; width: 140%; opacity: .75; }
+  .ios-hero__waves { top: 26%; left: -30%; width: 170%; opacity: .8; }
 
   /* Großer Halbkreis, der unten aus der Karte läuft — der Scanner steht mittig darauf. */
-  .ios-hero__ellipse-big,
-  .ios-hero__ellipse-small { display: none; }
+  .ios-hero__ellipse-big { display: none; }
 
   .ios-hero__card::after {
     content: '';
