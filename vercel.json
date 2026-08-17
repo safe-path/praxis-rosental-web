@@ -3,6 +3,12 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "zahnarztpraxis-am-rosental.de" }],
+      "destination": "https://www.zahnarztpraxis-am-rosental.de/$1",
+      "permanent": true
+    },
     { "source": "/datenschutz", "destination": "/datenschutzerklarung", "permanent": true }
   ],
   "headers": [
