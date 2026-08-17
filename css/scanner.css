@@ -198,6 +198,9 @@ body.ios-page {
 
 .ios-nav__toggle { display: none; }
 
+/* CTA nur im aufgeklappten Mobilmenü */
+.ios-nav__cta-mobile { display: none; }
+
 /* =========================================================================
    Hero — Figma 10219:31 / 10219:53030
    Karte: 1335.5 × 520.94, Radius 30, bg #142917, 179px unter Seitenanfang
@@ -381,6 +384,65 @@ body.ios-page {
 .ios-compare__col--new .ios-compare__mark svg { color: var(--accent); }
 
 /* =========================================================================
+   Besonderheiten — Bento-Raster nach dem Consult-Craft-Muster,
+   auf die Marken-Tokens übersetzt (Referenz-Beige #efeadf = --light-two).
+   ========================================================================= */
+.ios-features { background: var(--light-two); padding: 120px 0; }
+.ios-features__wrap { display: flex; flex-direction: column; gap: 40px; }
+.ios-features__row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  align-items: stretch;
+}
+
+.ios-features__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: center;
+  padding-right: 8px;
+}
+.ios-features__intro h2 { font-family: var(--serif); font-weight: 400; font-size: 46px; line-height: 1.1; color: var(--black); }
+.ios-features__intro p { font-size: 20px; line-height: 1.4; color: #4d5a4f; }
+
+.ios-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  height: 100%;
+  padding: 40px 52px 40px 40px;
+  border-radius: var(--radius-tile);
+  background: var(--white);
+  color: var(--black);
+  box-shadow: 0 2px 30px rgba(109, 119, 119, .1);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.ios-card:hover { transform: translateY(-2px); box-shadow: 0 2px 50px rgba(0, 0, 0, .08); }
+
+/* Hervorgehobene, leicht gedrehte Karte wie in der Vorlage */
+.ios-card--highlight {
+  background: var(--black);
+  color: var(--light);
+  transform: rotate(-3deg);
+}
+.ios-card--highlight:hover { transform: rotate(-3deg) translateY(-2px); }
+/* Die Einblend-Animation setzt transform und würde die Drehung sonst
+   überschreiben — deshalb hier beide Zustände inklusive Rotation. */
+.js .ios-card--highlight.ios-reveal { transform: rotate(-3deg) translateY(16px); }
+.js .ios-card--highlight.ios-reveal.is-in { transform: rotate(-3deg); }
+.ios-card--highlight .ios-card__title { color: var(--white); }
+.ios-card--highlight .ios-card__icon { color: var(--accent); }
+
+.ios-card__head { display: flex; align-items: center; gap: 16px; }
+.ios-card__icon { flex: none; width: 40px; height: 40px; color: var(--brand-900); }
+.ios-card__icon svg { width: 40px; height: 40px; }
+.ios-card__title { font-size: 24px; font-weight: 500; line-height: 1.2; }
+.ios-card__text { font-size: 17px; line-height: 1.45; color: inherit; opacity: .85; }
+
+/* =========================================================================
    Process — Figma 10219:53153
    ========================================================================= */
 .ios-process {
@@ -422,11 +484,14 @@ body.ios-page {
 .ios-process__sub { font-size: 18px; line-height: 1.5; color: var(--light); }
 
 .ios-process__steps {
+  --step-gap: 58px;
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 58px;
+  /* minmax(0,1fr) statt 1fr: sonst dehnt der nowrap-Titel Spalte 1,
+     die Punktabstände werden ungleich und die Segmente überlappen. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--step-gap);
   width: min(100% - 48px, 1262px);
   margin-inline: auto;
 }
@@ -450,18 +515,20 @@ body.ios-page {
   justify-content: center;
   margin-bottom: 24px;
 }
+/* Ein Segment je Schritt, exakt von diesem Punkt bis zum nächsten.
+   Früher überlappten sich beidseitige Überstände, was die Linie
+   abschnittsweise doppelt deckend und damit dicker wirken ließ. */
 .ios-step__rail::before {
   content: '';
   position: absolute;
   top: 50%;
-  left: -50%;
-  right: -50%;
+  left: 50%;
+  right: calc(-50% - var(--step-gap));
   height: 1px;
   background: var(--light-two);
   opacity: .5;
 }
-.ios-step:first-child .ios-step__rail::before { left: 50%; }
-.ios-step:last-child  .ios-step__rail::before { right: 50%; }
+.ios-step:last-child .ios-step__rail::before { content: none; }
 .ios-step__dot {
   position: relative;
   width: 16px; height: 16px;
@@ -726,7 +793,7 @@ body.ios-page {
   .ios-team__card { grid-template-columns: 360px 1fr; }
   .ios-team__body { padding: 56px 40px; }
   .ios-contact__grid { grid-template-columns: 1fr 1fr; gap: 48px; }
-  .ios-process__steps { gap: 32px; }
+  .ios-process__steps { --step-gap: 32px; }
   .ios-step__num { font-size: 96px; letter-spacing: -5px; }
 }
 
@@ -767,6 +834,11 @@ body.ios-page {
   .ios-btn--nav { font-size: 15px; padding: 8px 16px; min-height: 40px; }
   .ios-btn--nav .ios-btn__icon { width: 13px; height: 13px; }
 
+  .ios-features { padding: 100px 0; }
+  .ios-features__row { grid-template-columns: 1fr; gap: 24px; max-width: 520px; margin-inline: auto; width: 100%; }
+  .ios-features__intro { text-align: center; align-items: center; margin-bottom: 24px; }
+  .ios-card--highlight, .ios-card--highlight:hover { transform: none; }
+
   .ios-process__steps { grid-template-columns: repeat(2, 1fr); gap: 56px 32px; }
   .ios-step__rail::before { display: none; }
   .ios-step__rail { margin-bottom: 16px; }
@@ -793,17 +865,47 @@ body.ios-page {
   .ios-hero__actions { gap: 12px; padding-top: 24px; }
   .ios-hero__actions .ios-btn { flex: 1 1 auto; justify-content: center; padding-inline: 20px; }
 
-  /* Scanner rückt unter den Text und bekommt eine eigene Bühne */
-  .ios-hero__figure {
+  /* Scanner rückt unter den Text, mittig auf einer angeschnittenen Halbkreis-Bühne.
+     Selektor bewusst zweistufig: .ios-page figure aus dem Reset hat sonst die
+     höhere Spezifität und setzt margin auf 0 — der Scanner klebte dann links. */
+  .ios-hero__card .ios-hero__figure {
     position: relative;
     left: auto; top: auto;
-    width: 62%;
-    max-width: 240px;
-    margin: 28px auto -2px;
+    width: 64%;
+    max-width: 250px;
+    margin: 32px auto 0;
+    display: flex;
+    justify-content: center;
   }
-  .ios-hero__waves { top: 34%; left: 8%; width: 130%; opacity: .8; }
-  .ios-hero__ellipse-big { top: 78%; left: 0; width: 130%; }
-  .ios-hero__ellipse-small { top: 84%; left: 34%; width: 46%; }
+  .ios-hero__waves { top: 30%; left: 4%; width: 140%; opacity: .75; }
+
+  /* Großer Halbkreis, der unten aus der Karte läuft — der Scanner steht mittig darauf. */
+  .ios-hero__ellipse-big,
+  .ios-hero__ellipse-small { display: none; }
+
+  .ios-hero__card::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -34%;
+    width: 172%;
+    aspect-ratio: 1 / 1;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: var(--brand-300);
+    opacity: .9;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .ios-hero__col { position: relative; z-index: 3; }
+
+  .ios-features { padding: 80px 0; }
+  .ios-features__intro h2 { font-size: 34px; }
+  .ios-features__intro p { font-size: 17px; }
+  .ios-card { padding: 32px 28px; gap: 16px; }
+  .ios-card__head { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .ios-card__title { font-size: 21px; }
+  .ios-card__icon, .ios-card__icon svg { width: 34px; height: 34px; }
 
   .ios-compare { padding: 64px 0; }
   .ios-compare__grid { grid-template-columns: 1fr; gap: 16px; }
@@ -846,6 +948,19 @@ body.ios-page {
   .ios-step__num { font-size: 84px; letter-spacing: -4px; margin-bottom: -12px; }
   .ios-step__title { font-size: 18px; margin-bottom: 12px; }
   .ios-step__text { font-size: 16px; }
+
+  /* Ab hier passen Logo, CTA und Burger nicht mehr nebeneinander —
+     der CTA wandert ins Menü, direkt darunter steht er im Hero ohnehin. */
+  .ios-nav__actions .ios-btn--nav { display: none; }
+  .ios-nav.is-open .ios-nav__cta-mobile {
+    display: inline-flex;
+    margin-top: 8px;
+    padding: 12px 20px;
+    border-radius: var(--radius-btn);
+    background: var(--white);
+    border: 1px solid var(--brand-900);
+  }
+  .ios-nav.is-open .ios-nav__cta-mobile:hover { border-bottom-color: var(--brand-900); }
 
   .ios-faq__item > summary { padding: 20px 20px 20px 24px; font-size: 16px; min-height: 72px; gap: 16px; }
   .ios-faq__answer { padding: 0 24px 22px; font-size: 16px; }
